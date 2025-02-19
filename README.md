@@ -30,7 +30,7 @@ Jira (Project Management - Scrum)
 
 🚀 Features
 
-✅ User Authentication: Login, Signup/n
+✅ User Authentication: Login, Signup
 ✅ Carbon Footprint Calculation: Based on user inputs
 ✅ Data Visualization: Interactive charts and graphs
 ✅ Progress Tracking: Historical emission data
