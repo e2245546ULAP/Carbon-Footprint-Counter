@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import "../styles/HomePage.css";
+import InputForm from "../components/InputForm";
 
 function Header() {
   return (
@@ -30,7 +31,7 @@ function Header() {
   );
 }
 
-function Body() {
+function Body({ onSelectCategory }) {
   return (
     <section>
       <div className="hero-home">
@@ -65,11 +66,30 @@ function Body() {
         <h2>Carbon Footprint Categories</h2>
         <p>Select a category to explore its impact on carbon emissions:</p>
         <div className="category-list">
-          <div className="category-item">🌍 Transportation</div>
-          <div className="category-item">🏡 Energy Usage</div>
-          <div className="category-item">🍔 Food Consumption</div>
-          <div className="category-item">🛍️ Shopping & Lifestyle</div>
-          <div className="category-item">♻️ Waste Management</div>
+          <div
+            className="category-item"
+            onClick={() => onSelectCategory("Transportation")}
+          >
+            🌍 Transportation
+          </div>
+          <div
+            className="category-item"
+            onClick={() => onSelectCategory("Energy Usage")}
+          >
+            🏡 Energy Usage
+          </div>
+          <div
+            className="category-item"
+            onClick={() => onSelectCategory("Food Consumption")}
+          >
+            🍔 Food Consumption
+          </div>
+          <div
+            className="category-item"
+            onClick={() => onSelectCategory("Waste")}
+          >
+            ♻️ Waste Management
+          </div>
         </div>
       </div>
 
@@ -123,11 +143,20 @@ function Footer() {
 }
 
 function App() {
+  const [selectedCategory, setSelectedCategory] = useState(null);
+
   return (
     <div>
       <Header />
-      <Body />
-      <Footer />
+      {selectedCategory ? (
+        <InputForm
+          category={selectedCategory}
+          onBack={() => setSelectedCategory(null)}
+        />
+      ) : (
+        <Body onSelectCategory={setSelectedCategory} />
+      )}
+      {!selectedCategory && <Footer />}
     </div>
   );
 }
