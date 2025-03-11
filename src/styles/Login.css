@@ -1,0 +1,128 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
+
+body {
+  font-family: "Roboto", sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.login-container {
+  background-image: url("../assets/background.jpg");
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.content {
+  background: rgba(255, 255, 255, 0.8);
+  padding: 30px;
+  border-radius: 15px;
+  max-width: 900px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border: 2px solid #4a8576;
+  display: flex;
+}
+
+.form-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.image-side {
+  flex: 1;
+  padding-right: 20px;
+}
+
+.login-image {
+  width: 100%;
+  max-width: 300px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.form-side {
+  flex: 2;
+  text-align: left;
+  width: 100%;
+}
+
+h1 {
+  font-size: 32px;
+  margin-bottom: 15px;
+  color: #2c5f2d;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.input-field {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #4a8576;
+  border-radius: 5px;
+  font-size: 16px;
+  background-color: #cfe8cf;
+  color: #333;
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: #4a8576;
+  box-shadow: 0 0 5px rgba(74, 133, 118, 0.5);
+}
+
+.login-button {
+  background-color: #4a8576;
+  color: white;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.login-button:hover {
+  background-color: #2c5f2d;
+}
+
+.error-message {
+  color: red;
+  font-size: 14px;
+  margin-top: -10px;
+  margin-bottom: 10px;
+}
+
+.signup-prompt {
+  font-size: 14px;
+  margin-top: 20px;
+  color: #2c5f2d;
+}
+
+.signup-link {
+  color: #4a8576;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.signup-link:hover {
+  text-decoration: underline;
+}
+
+hr {
+  width: 100%;
+  margin: 20px 0;
+  border: 1px solid #4a8576;
+}
