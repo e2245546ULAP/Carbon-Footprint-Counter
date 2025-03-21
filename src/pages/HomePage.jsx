@@ -74,13 +74,13 @@ function Body({ onSelectCategory }) {
           </div>
           <div
             className="category-item"
-            onClick={() => onSelectCategory("Energy Usage")}
+            onClick={() => onSelectCategory("Energy")}
           >
             🏡 Energy Usage
           </div>
           <div
             className="category-item"
-            onClick={() => onSelectCategory("Food Consumption")}
+            onClick={() => onSelectCategory("Food")}
           >
             🍔 Food Consumption
           </div>
