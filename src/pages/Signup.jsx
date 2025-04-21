@@ -3,13 +3,17 @@ import "../styles/Signup.css";
 
 export default function SignupPage() {
   const [formData, setFormData] = useState({
-    name: "",
+    first_name: "",
+    last_name: "",
     email: "",
     password: "",
   });
-  const [errors, setErrors] = useState({ email: "", password: "" });
 
-  // Sinitization
+  const [errors, setErrors] = useState({
+    email: "",
+    password: "",
+  });
+
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
@@ -22,8 +26,6 @@ export default function SignupPage() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-
-    // Validation
     if (name === "email") {
       setErrors({
         ...errors,
@@ -39,7 +41,7 @@ export default function SignupPage() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (
       !validateEmail(formData.email) ||
@@ -48,8 +50,35 @@ export default function SignupPage() {
       alert("Please fix the errors before submitting.");
       return;
     }
-  };
 
+    try {
+      const response = await fetch("http://localhost:5000/api/auth/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await response.json();
+
+      if (data.success) {
+        alert("User registered successfully!");
+        console.log("Registered User:", data.user);
+        // Optional: Reset the form
+        setFormData({
+          first_name: "",
+          last_name: "",
+          email: "",
+          password: "",
+        });
+      } else {
+        alert("Registration failed: " + data.message);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("An error occurred during registration.");
+    }
+  };
   return (
     <div className="signup-container">
       <div className="content">
@@ -67,10 +96,20 @@ export default function SignupPage() {
             <form onSubmit={handleSubmit}>
               <input
                 type="text"
-                name="name"
-                placeholder="Name"
+                name="first_name"
+                placeholder="First Name"
                 className="input-field"
-                value={formData.name}
+                value={formData.first_name}
+                onChange={handleChange}
+                maxLength="30"
+                required
+              />
+              <input
+                type="text"
+                name="last_name"
+                placeholder="Last Name"
+                className="input-field"
+                value={formData.last_name}
                 onChange={handleChange}
                 maxLength="30"
                 required
@@ -105,6 +144,7 @@ export default function SignupPage() {
           </div>
         </div>
       </div>
+         
     </div>
   );
 }

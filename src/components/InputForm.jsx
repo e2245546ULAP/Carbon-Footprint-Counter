@@ -1,9 +1,16 @@
 import React, { useState } from "react";
 import "../components/InputForm.css";
 
-function InputForm({ category, onBack }) {
+function InputForm({ category, onBack, onResult }) {
   const [formData, setFormData] = useState({});
   const [errors, setErrors] = useState({});
+
+  const categoryImages = {
+    Energy: "public/energy.jpg",
+    Food: "public/food.jpg",
+    Waste: "public/waste.jpg",
+    Transportation: "public/transportation.jpeg",
+  };
 
   const formFields = {
     Energy: [
@@ -56,44 +63,34 @@ function InputForm({ category, onBack }) {
     ],
   };
 
-  const categoryImages = {
-    Energy: "../public/energy.jpg",
-    Food: "../public/food.jpg",
-    Waste: "../public/waste.jpg",
-    Transportation: "../public/transportation.jpeg",
-  };
-
   const handleChange = (e) => {
-    const { name, value, type } = e.target;
-    let newValue = value;
-
-    // Ensure numeric fields only accept numbers
-    if (type === "number" && value !== "" && isNaN(value)) {
-      return;
-    }
-
-    setFormData({ ...formData, [name]: newValue });
-
-    // Basic Validation
-    setErrors({ ...errors, [name]: newValue ? "" : "This field is required" });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+    setErrors({ ...errors, [name]: value ? "" : "This field is required" });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    let valid = true;
     let newErrors = {};
-
     formFields[category].forEach((field) => {
-      if (!formData[field.name]) {
-        valid = false;
+      if (!formData[field.name])
         newErrors[field.name] = "This field is required";
-      }
     });
-
     setErrors(newErrors);
 
-    if (valid) {
-      console.log("Form submitted:", formData);
+    if (Object.keys(newErrors).length === 0) {
+      try {
+        const response = await fetch("http://localhost:5000/calculate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ category, ...formData }),
+        });
+
+        const result = await response.json();
+        onResult(result);
+      } catch (error) {
+        console.error("Error:", error);
+      }
     }
   };
 
