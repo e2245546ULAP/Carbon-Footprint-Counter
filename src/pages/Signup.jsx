@@ -63,6 +63,7 @@ export default function SignupPage() {
 
       if (data.success) {
         alert("User registered successfully!");
+        window.location.href = "/login";
         console.log("Registered User:", data.user);
         // Optional: Reset the form
         setFormData({

@@ -39,7 +39,7 @@ function Body({ onSelectCategory }) {
           <p className="tagline">Reduce Your Carbon Footprint Today</p>
           <h2>For a Greener Tomorrow!</h2>
           <a href="#section2" className="calculate-btn">
-            Get Started
+            Calculate
           </a>
         </div>
       </div>

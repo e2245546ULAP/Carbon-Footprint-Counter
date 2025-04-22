@@ -32,6 +32,7 @@ export default function LoginPage() {
       alert("Please fix the errors before submitting.");
       return;
     }
+    window.location.href = "/home";
   };
 
   return (
