@@ -12,54 +12,84 @@ function InputForm({ category, onBack, onResult }) {
     Transportation: "public/transportation.jpeg",
   };
 
-  const formFields = {
+  const dropdownFields = {
     Energy: [
       {
-        label: "Type of energy",
-        name: "activity",
-        placeholder: "e.g., electricity",
+        label: "Region",
+        name: "region",
+        options: ["US", "EU", "Asia", "Africa"],
       },
       {
-        label: "Amount consumed",
-        name: "energy",
-        placeholder: "e.g., 100",
-        type: "number",
+        label: "Unit",
+        name: "unit",
+        options: ["kWh", "MWh"],
       },
-      { label: "Energy unit", name: "unit", placeholder: "e.g., kWh" },
-    ],
-    Food: [
-      { label: "Food type", name: "activity", placeholder: "e.g., beef" },
-      {
-        label: "Amount consumed",
-        name: "weight",
-        placeholder: "e.g., 0.5",
-        type: "number",
-      },
-      { label: "Weight unit", name: "unit", placeholder: "e.g., kg" },
-    ],
-    Waste: [
-      { label: "Waste type", name: "activity", placeholder: "e.g., recycling" },
-      {
-        label: "Amount of waste",
-        name: "weight",
-        placeholder: "e.g., 2",
-        type: "number",
-      },
-      { label: "Weight unit", name: "unit", placeholder: "e.g., kg" },
     ],
     Transportation: [
       {
-        label: "Transportation mode",
+        label: "Distance Unit",
+        name: "unit",
+        options: ["km", "miles"],
+      },
+    ],
+    Food: [
+      {
+        label: "Food Type",
         name: "activity",
-        placeholder: "e.g., bus",
+        options: ["Meat", "Vegetables", "Fruits", "Dairy Products"],
       },
       {
-        label: "Distance traveled",
-        name: "distance",
-        placeholder: "e.g., 50",
-        type: "number",
+        label: "Weight Unit",
+        name: "unit",
+        options: ["kg", "g"],
       },
-      { label: "Distance unit", name: "unit", placeholder: "e.g., km" },
+    ],
+    Waste: [
+      {
+        label: "Waste Type",
+        name: "activity",
+        options: ["Recycling", "Landfill", "Compost"],
+      },
+      {
+        label: "Weight Unit",
+        name: "unit",
+        options: ["kg", "g"],
+      },
+    ],
+  };
+
+  const numberFields = {
+    Energy: [
+      {
+        label: "Energy Consumed",
+        name: "energy",
+        type: "number",
+        placeholder: "e.g., 100",
+      },
+    ],
+    Transportation: [
+      {
+        label: "Distance Traveled",
+        name: "distance",
+        type: "number",
+        placeholder: "e.g., 50",
+      },
+    ],
+    Food: [
+      {
+        label: "Amount Consumed",
+        name: "weight",
+        type: "number",
+        placeholder: "e.g., 0.5",
+      },
+    ],
+    Waste: [
+      {
+        label: "Amount of Waste",
+        name: "weight",
+        type: "number",
+        placeholder: "e.g., 2",
+      },
     ],
   };
 
@@ -72,7 +102,11 @@ function InputForm({ category, onBack, onResult }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     let newErrors = {};
-    formFields[category].forEach((field) => {
+    const allFields = [
+      ...(dropdownFields[category] || []),
+      ...(numberFields[category] || []),
+    ];
+    allFields.forEach((field) => {
       if (!formData[field.name])
         newErrors[field.name] = "This field is required";
     });
@@ -80,10 +114,35 @@ function InputForm({ category, onBack, onResult }) {
 
     if (Object.keys(newErrors).length === 0) {
       try {
+        let payload;
+        if (category === "Energy") {
+          payload = {
+            emission_factor: "electricity",
+            parameters: {
+              energy: Number(formData.energy),
+              unit: formData.unit,
+              region: formData.region,
+            },
+          };
+        } else if (category === "Transportation") {
+          payload = {
+            emission_factor: "passenger_vehicle",
+            parameters: {
+              distance: Number(formData.distance),
+              unit: formData.unit,
+            },
+          };
+        } else {
+          payload = {
+            category,
+            ...formData,
+          };
+        }
+
         const response = await fetch("http://localhost:5000/calculate", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ category, ...formData }),
+          body: JSON.stringify(payload),
         });
 
         const result = await response.json();
@@ -108,20 +167,41 @@ function InputForm({ category, onBack, onResult }) {
           <h1>{category} Input Form</h1>
           <hr />
           <form onSubmit={handleSubmit}>
-            {formFields[category].map((field, index) => (
+            {dropdownFields[category]?.map((field, index) => (
+              <div className="input-group" key={index}>
+                <label htmlFor={field.name} className="input-label">
+                  {field.label}:
+                </label>
+                <select
+                  id={field.name}
+                  name={field.name}
+                  className="input-field"
+                  value={formData[field.name] || ""}
+                  onChange={handleChange}
+                >
+                  <option value="">Select...</option>
+                  {field.options.map((option, idx) => (
+                    <option value={option} key={idx}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
+                <span className="error-message">{errors[field.name]}</span>
+              </div>
+            ))}
+            {numberFields[category]?.map((field, index) => (
               <div className="input-group" key={index}>
                 <label htmlFor={field.name} className="input-label">
                   {field.label}:
                 </label>
                 <input
                   id={field.name}
-                  type={field.type || "text"}
+                  type="number"
                   name={field.name}
                   placeholder={field.placeholder}
                   className="input-field"
                   value={formData[field.name] || ""}
                   onChange={handleChange}
-                  required
                 />
                 <span className="error-message">{errors[field.name]}</span>
               </div>
