@@ -1,9 +1,11 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../components/InputForm.css";
 
-function InputForm({ category, onBack }) {
+function InputForm({ category, onBack, onResult }) {
   const [formData, setFormData] = useState({});
   const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
 
   const categoryImages = {
     Energy: "public/energy.jpg",
@@ -85,15 +87,14 @@ function InputForm({ category, onBack }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    let newErrors = {};
     const allFields = [
       ...(dropdownFields[category] || []),
       ...(numberFields[category] || []),
     ];
-    let newErrors = {};
     allFields.forEach((field) => {
-      if (!formData[field.name]) {
+      if (!formData[field.name])
         newErrors[field.name] = "This field is required";
-      }
     });
     setErrors(newErrors);
 
@@ -118,10 +119,7 @@ function InputForm({ category, onBack }) {
             },
           };
         } else {
-          payload = {
-            category,
-            ...formData,
-          };
+          payload = { category, ...formData };
         }
 
         const response = await fetch("http://localhost:5000/calculate", {
@@ -131,15 +129,10 @@ function InputForm({ category, onBack }) {
         });
 
         const result = await response.json();
-
-        // Save result to localStorage so Results.jsx can access it
-        localStorage.setItem("carbonResult", JSON.stringify(result));
-
-        // Redirect to results page
-        window.location.href = "/results";
+        onResult(result);
+        navigate("/results");
       } catch (error) {
         console.error("Error:", error);
-        alert("Submission failed. Please try again.");
       }
     }
   };
