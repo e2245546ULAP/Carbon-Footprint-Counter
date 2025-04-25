@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "../components/InputForm.css";
 
-function InputForm({ category, onBack, onResult }) {
+function InputForm({ category, onBack }) {
   const [formData, setFormData] = useState({});
   const [errors, setErrors] = useState({});
 
@@ -19,18 +19,10 @@ function InputForm({ category, onBack, onResult }) {
         name: "region",
         options: ["US", "EU", "Asia", "Africa"],
       },
-      {
-        label: "Unit",
-        name: "unit",
-        options: ["kWh", "MWh"],
-      },
+      { label: "Unit", name: "unit", options: ["kWh", "MWh"] },
     ],
     Transportation: [
-      {
-        label: "Distance Unit",
-        name: "unit",
-        options: ["km", "miles"],
-      },
+      { label: "Distance Unit", name: "unit", options: ["km", "miles"] },
     ],
     Food: [
       {
@@ -38,11 +30,7 @@ function InputForm({ category, onBack, onResult }) {
         name: "activity",
         options: ["Meat", "Vegetables", "Fruits", "Dairy Products"],
       },
-      {
-        label: "Weight Unit",
-        name: "unit",
-        options: ["kg", "g"],
-      },
+      { label: "Weight Unit", name: "unit", options: ["kg", "g"] },
     ],
     Waste: [
       {
@@ -50,11 +38,7 @@ function InputForm({ category, onBack, onResult }) {
         name: "activity",
         options: ["Recycling", "Landfill", "Compost"],
       },
-      {
-        label: "Weight Unit",
-        name: "unit",
-        options: ["kg", "g"],
-      },
+      { label: "Weight Unit", name: "unit", options: ["kg", "g"] },
     ],
   };
 
@@ -101,14 +85,15 @@ function InputForm({ category, onBack, onResult }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    let newErrors = {};
     const allFields = [
       ...(dropdownFields[category] || []),
       ...(numberFields[category] || []),
     ];
+    let newErrors = {};
     allFields.forEach((field) => {
-      if (!formData[field.name])
+      if (!formData[field.name]) {
         newErrors[field.name] = "This field is required";
+      }
     });
     setErrors(newErrors);
 
@@ -146,9 +131,15 @@ function InputForm({ category, onBack, onResult }) {
         });
 
         const result = await response.json();
-        onResult(result);
+
+        // Save result to localStorage so Results.jsx can access it
+        localStorage.setItem("carbonResult", JSON.stringify(result));
+
+        // Redirect to results page
+        window.location.href = "/results";
       } catch (error) {
         console.error("Error:", error);
+        alert("Submission failed. Please try again.");
       }
     }
   };
